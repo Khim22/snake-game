@@ -1,4 +1,3 @@
-
 import turtle
 import time
 import random
@@ -7,7 +6,7 @@ import random
 wn = turtle.Screen()
 wn.title("Snake")
 wn.bgcolor("black")
-wn.setup(width=300,height=300)
+wn.setup(width=600,height=600)
 wn.tracer(0)
 
 #snake
@@ -27,7 +26,10 @@ food.color("gray")
 food.penup()
 food.goto(100,0)
 
+#variables
 delay = 0.1
+segments = []
+
 
 def move_up():
     head.direction = "up"
@@ -74,12 +76,42 @@ wn.onkeypress(move_right,"Right")
 while True:
     wn.update()
 
+    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
+        time.sleep(1)
+        head.goto(0,0)
+        head.direction ='stop'
+        
+        for s in segments:
+            s.goto(1000,1000)
+        
+        segments.clear()
+
     if head.distance(food) < 20 :
         food.goto(
             random.randint(-300,300),
             random.randint(-300,300)
         )       
+
+        new_seg = turtle.Turtle()
+        new_seg.shape("square")
+        new_seg.color("grey")
+        new_seg.speed(0)
+        new_seg.penup()
+        segments.append(new_seg)
     
+    #for last segment to follow previous segment
+    for index in range(len(segments)-1,0,-1):
+        segments[index].goto(
+            segments[index-1].xcor(),
+            segments[index-1].ycor()
+        )
+
+    if len(segments) > 0:
+        x = head.xcor()
+        y = head.ycor()
+        segments[0].goto(x,y)
+    
+
     move()
 
     time.sleep(delay)
