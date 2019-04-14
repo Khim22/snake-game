@@ -32,18 +32,22 @@ segments = []
 
 
 def move_up():
-    head.direction = "up"
+    if head.direction != "down":
+        head.direction = "up"
 
 def move_down():
-    head.direction = "down"
+    if head.direction != "up":
+        head.direction = "down"
 
 
 def move_left():
-    head.direction = "left"
+    if head.direction != "right":
+        head.direction = "left"
 
 
 def move_right():
-    head.direction = "right"
+    if head.direction != "left":
+        head.direction = "right"
 
 
 def move():
@@ -66,6 +70,16 @@ def move():
         y = head.ycor()
         head.sety(y+20)
 
+def reset(segments):
+    time.sleep(1)
+    head.goto(0,0)
+    head.direction ='stop'
+    
+    for s in segments:
+        s.goto(1000,1000)
+    
+    segments.clear()
+
 
 wn.listen()
 wn.onkeypress(move_up,"Up")
@@ -77,14 +91,13 @@ while True:
     wn.update()
 
     if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
-        time.sleep(1)
-        head.goto(0,0)
-        head.direction ='stop'
-        
-        for s in segments:
-            s.goto(1000,1000)
-        
-        segments.clear()
+        reset(segments)
+
+
+    for segment in segments:
+        if segment.distance(head) < 20:
+            reset(segments)
+
 
     if head.distance(food) < 20 :
         food.goto(
