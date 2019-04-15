@@ -29,6 +29,8 @@ food.goto(100,0)
 #variables
 delay = 0.1
 segments = []
+score = 0
+high_score = 0
 
 
 def move_up():
@@ -80,6 +82,18 @@ def reset(segments):
     
     segments.clear()
 
+def write_score(pen, score, high_score): 
+    pen.speed(0)
+    pen.shape('square')
+    pen.color('white')
+    pen.penup()
+    pen.hideturtle()
+    pen.goto(0,260)
+    pen.clear()
+    pen.write("Score: {}  Highscore: {}".format(score, high_score), align="center", font=('Courier', 24, "normal" ))
+
+pen = turtle.Turtle()
+write_score(pen, score , high_score)
 
 wn.listen()
 wn.onkeypress(move_up,"Up")
@@ -92,11 +106,15 @@ while True:
 
     if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
         reset(segments)
+        score = 0
+        write_score(pen, score, high_score)
 
 
     for segment in segments:
         if segment.distance(head) < 20:
             reset(segments)
+            score = 0
+            write_score(pen, score, high_score)
 
 
     if head.distance(food) < 20 :
@@ -111,6 +129,12 @@ while True:
         new_seg.speed(0)
         new_seg.penup()
         segments.append(new_seg)
+
+        score += 10
+        if score > high_score:
+            high_score = score
+        write_score(pen, score, high_score)
+        
     
     #for last segment to follow previous segment
     for index in range(len(segments)-1,0,-1):
