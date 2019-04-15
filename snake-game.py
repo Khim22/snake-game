@@ -57,16 +57,13 @@ def move():
         x = head.xcor()
         head.setx(x-20)
 
-
     if head.direction == "right":
         x = head.xcor()
         head.setx(x+20)
 
-
     if head.direction == "down":
         y = head.ycor()
         head.sety(y-20)
-
 
     if head.direction == "up":
         y = head.ycor()
@@ -81,6 +78,10 @@ def reset(segments):
         s.goto(1000,1000)
     
     segments.clear()
+    
+def reset_score():
+    return 0, 0
+
 
 def write_score(pen, score, high_score): 
     pen.speed(0)
@@ -106,15 +107,17 @@ while True:
 
     if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
         reset(segments)
-        score = 0
+        score, high_score = reset_score()
         write_score(pen, score, high_score)
+        delay = 0.1
 
 
     for segment in segments:
         if segment.distance(head) < 20:
             reset(segments)
-            score = 0
+            # score = 0
             write_score(pen, score, high_score)
+            delay = 0.1
 
 
     if head.distance(food) < 20 :
@@ -134,6 +137,7 @@ while True:
         if score > high_score:
             high_score = score
         write_score(pen, score, high_score)
+        delay -= 0.001
         
     
     #for last segment to follow previous segment
